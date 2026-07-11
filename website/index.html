@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuni — Personal Call Recorder for Android</title>
+    
+    <!-- SEO Optimization -->
+    <meta name="description" content="Shuni (শুনি) is a secure, personal call recording app built for modern Android devices. High-quality Opus audio compression, map location logs, and Google Drive backups.">
+    <meta name="keywords" content="call recording android 16, call recorder shizuku, open source call recorder android, personal voice logs">
+    
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="Shuni — Secure Personal Call Recorder">
+    <meta property="og:description" content="Archiving call logs with map coordinates and gzipped cloud backups. Premium dark mode interface.">
+    <meta property="og:type" content="website">
+    
+    <!-- Google Fonts: Outfit (headings) + Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Local Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header / Navigation -->
+    <header>
+        <div class="nav-container">
+            <div class="logo-area">
+                <span class="logo-icon">🎙️</span>
+                <span class="logo-text">Shuni <span class="logo-bangla">শুনি</span></span>
+            </div>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#setup">Setup Guide</a>
+                <a href="#download" class="nav-btn">Download APK</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-container">
+            <h1 class="hero-title">শোনো, মনে রাখো</h1>
+            <p class="hero-subtitle">Every conversation, preserved. Secure call logs, map location logs, and gzipped cloud backups inside a premium dark theme interface.</p>
+            <div class="hero-actions">
+                <a href="#download" class="btn btn-primary">Get Shuni APK</a>
+                <a href="#setup" class="btn btn-secondary">Setup Guide</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="section-container">
+            <h2 class="section-title">Archiving Redefined</h2>
+            <div class="features-grid">
+                <!-- 1. Recording -->
+                <div class="feature-card">
+                    <div class="card-icon">🎙️</div>
+                    <h3>Privileged Audio</h3>
+                    <p>Uses Shizuku binder links to access Android's VOICE_CALL stream directly. Crystal clear 32kbps Opus audio capturing both speaker and receiver.</p>
+                </div>
+                <!-- 2. Location -->
+                <div class="feature-card">
+                    <div class="card-icon">📍</div>
+                    <h3>Location Maps</h3>
+                    <p>Logs exact GPS coordinates when call connects. Interactively view call marker clusters on free OpenStreetMap views inside the app.</p>
+                </div>
+                <!-- 3. Security -->
+                <div class="feature-card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Invisible PIN Lock</h3>
+                    <p>Supports face/fingerprint authentication. Custom keypad entry draws absolutely zero visual characters, preventing shoulder-surfing.</p>
+                </div>
+                <!-- 4. Backup -->
+                <div class="feature-card">
+                    <div class="card-icon">☁️</div>
+                    <h3>Google Drive sync</h3>
+                    <p>Free personal OAuth sync. Databases and call records are zipped and backed up directly onto your personal Google Drive storage.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Setup Guide Section -->
+    <section id="setup" class="setup-section">
+        <div class="section-container">
+            <h2 class="section-title">How To Setup</h2>
+            <div class="setup-flow">
+                <div class="setup-step">
+                    <div class="step-badge">1</div>
+                    <h4>Install Shizuku</h4>
+                    <p>Download Shizuku from the Google Play Store (free, open source utility).</p>
+                </div>
+                <div class="setup-step">
+                    <div class="step-badge">2</div>
+                    <h4>Pairing & Launch</h4>
+                    <p>Enable Wireless Debugging in Android Developer Options. Pair Shizuku, then tap "Start" to launch the privilege service manager.</p>
+                </div>
+                <div class="setup-step">
+                    <div class="step-badge">3</div>
+                    <h4>Install Shuni</h4>
+                    <p>Download the latest Shuni release APK, install on your Nothing 3a, grant permissions, and approve Shizuku access.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download-section">
+        <div class="download-container">
+            <h2>Download Shuni APK</h2>
+            <p>Ready to archive your call logs securely? Get the latest release package direct from our repository.</p>
+            <div class="download-box">
+                <a href="https://github.com/Tansir-Labib/shuni/releases/latest" class="btn btn-large">
+                    <span class="btn-icon">⬇️</span> Download Shuni v1.0.0
+                </a>
+                <span class="download-meta">Size: ~16 MB · Target: Android 11+ (API 30)</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <p>© 2026 Shuni App · Designed by Tansir Labib. All records are stored locally and securely.</p>
+            <div class="footer-socials" style="margin: 10px 0; display: flex; gap: 15px; justify-content: center;">
+                <a href="https://www.facebook.com/share/1fSvV2jwvx/" target="_blank" title="Facebook" style="color: var(--textMuted); transition: color 0.3s;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+                </a>
+                <a href="https://github.com/Tansir-Labib" target="_blank" title="GitHub" style="color: var(--textMuted); transition: color 0.3s;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/in/tansir" target="_blank" title="LinkedIn" style="color: var(--textMuted); transition: color 0.3s;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/Tansir-Labib/shuni">GitHub Repository</a>
+                <a href="#setup">Troubleshooting</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

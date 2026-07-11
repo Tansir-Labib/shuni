@@ -1,0 +1,71 @@
+name: shuni
+description: "Shuni (শুনি) — Personal call recording app. Listen, Remember."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  crypto: ^3.0.3                   # MD5, SHA-1, SHA-256 hashing for PIN security
+
+  # --- UI & Design ---
+  cupertino_icons: ^1.0.8          # iOS-style icons
+  google_fonts: ^6.2.1             # Outfit + Inter typography
+  flutter_animate: ^4.5.2          # Declarative animations (staggered lists, fades)
+  shimmer: ^3.0.0                  # Loading skeleton effects
+
+  # --- State Management ---
+  flutter_riverpod: ^2.6.1         # Reactive state management
+  riverpod_annotation: ^2.6.1      # Code-gen annotations for Riverpod
+
+  # --- Database & Storage ---
+  sqflite: ^2.4.2                  # SQLite local database
+  path_provider: ^2.1.5            # App directory paths
+  path: ^1.9.1                     # Path manipulation utilities
+  flutter_secure_storage: ^9.2.4   # Encrypted storage (PIN hash, tokens)
+
+  # --- Audio ---
+  just_audio: ^0.9.43              # Audio playback engine
+
+  # --- Maps & Location ---
+  flutter_map: ^7.0.2              # OpenStreetMap map widget (free, no API key)
+  latlong2: ^0.9.1                 # Lat/lng coordinate types
+  geolocator: ^13.0.2              # GPS location provider
+
+  # --- Authentication ---
+  local_auth: ^2.3.0               # Biometric (fingerprint/face) authentication
+
+  # --- Permissions ---
+  permission_handler: ^11.4.0      # Runtime permission requests
+
+  # --- Notifications ---
+  flutter_local_notifications: ^18.0.1  # Recording status notifications
+
+  # --- Utilities ---
+  intl: ^0.20.3                    # Date/time formatting (Bangla + English)
+  uuid: ^4.5.1                     # Unique IDs for records
+  share_plus: ^10.1.4              # Share recordings externally
+  url_launcher: ^6.3.1             # Open external links
+
+  # --- Google Drive Backup ---
+  google_sign_in: ^6.2.2           # Google account authentication
+  googleapis: ^14.0.0              # Google Drive API client
+  http: ^1.3.0                     # HTTP client for API calls
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  riverpod_generator: ^2.6.3       # Riverpod code generation
+  build_runner: ^2.4.14            # Dart code generation runner
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/logo/
+    - assets/animations/

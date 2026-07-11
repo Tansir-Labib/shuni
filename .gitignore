@@ -1,0 +1,63 @@
+# ============================================================
+# Shuni — .gitignore
+# Keeps the repo clean. Only source code and config get committed.
+# ============================================================
+
+# --- Flutter / Dart ---
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.dart.js
+*.js_
+*.js.deps
+*.js.map
+.pub/
+
+# --- FVM (Flutter Version Management) ---
+# Keep the config file (so the team uses the same Flutter version)
+# Ignore the SDK symlink (each dev downloads their own)
+.fvm/flutter_sdk
+.fvm/versions/
+
+# --- Android ---
+android/.gradle/
+android/captures/
+android/local.properties
+android/GeneratedPluginRegistrant.java
+android/**/gradle-wrapper.jar
+android/app/debug/
+android/app/profile/
+android/app/release/
+*.apk
+*.aab
+
+# --- IDE ---
+.idea/
+*.iml
+.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Secrets (NEVER commit these) ---
+*.keystore
+*.jks
+google-services.json
+key.properties
+*.env
+
+# --- Generated Code ---
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+
+# --- Build Artifacts ---
+coverage/
+doc/api/

@@ -1,0 +1,394 @@
+/* ==========================================================================
+   Shuni Landing Page Stylesheet
+   Design System:
+   - Primary: #6C63FF (Violet)
+   - Accent: #FF6B6B (Coral)
+   - Background: #0A0A1A (Dark Navy)
+   - Surface: rgba(18, 18, 43, 0.8) (Glass Slate)
+   ========================================================================== */
+
+/* Variables */
+:root {
+    --primary: #6C63FF;
+    --primary-light: #8B83FF;
+    --accent: #FF6B6B;
+    --bg: #0A0A1A;
+    --surface: rgba(18, 18, 43, 0.85);
+    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #FFFFFF;
+    --text-secondary: #8B8BA7;
+    --text-muted: #5A5A7A;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-family: var(--font-body);
+    background-color: var(--bg);
+    color: var(--text-primary);
+}
+
+body {
+    background-color: var(--bg);
+    overflow-x: hidden;
+}
+
+/* Common Layout Container */
+.section-container, .nav-container, .hero-container, .download-container, .footer-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Header & Nav */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background-color: rgba(10, 10, 26, 0.7);
+    border-bottom: 1px solid var(--border);
+}
+
+.nav-container {
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    font-size: 28px;
+}
+
+.logo-text {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    background: linear-gradient(to right, #FFFFFF, var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo-bangla {
+    font-size: 14px;
+    color: var(--text-secondary);
+    vertical-align: middle;
+    font-weight: normal;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 14px;
+    transition: color 0.25s ease;
+}
+
+.nav-links a:hover {
+    color: #FFFFFF;
+}
+
+.nav-btn {
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), #4A42DB);
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), #4A42DB);
+    color: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(108, 99, 255, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(108, 99, 255, 0.35);
+}
+
+.btn-secondary {
+    background-color: var(--surface);
+    color: #FFFFFF;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero-section {
+    padding-top: 180px;
+    padding-bottom: 120px;
+    text-align: center;
+    background: radial-gradient(circle at center, rgba(108, 99, 255, 0.08) 0%, rgba(10, 10, 26, 0) 70%);
+}
+
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    letter-spacing: -1.5px;
+    background: linear-gradient(135deg, #FFFFFF 0%, #D2D2FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    max-width: 680px;
+    margin: 0 auto 40px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* Features Section */
+.features-section {
+    padding: 100px 0;
+    border-top: 1px solid var(--border);
+    background-color: rgba(10, 10, 26, 0.4);
+}
+
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 60px;
+    letter-spacing: -0.5px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 32px;
+}
+
+/* Glassmorphism Feature Cards */
+.feature-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(16px);
+    border-radius: 24px;
+    padding: 32px;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(108, 99, 255, 0.25);
+    box-shadow: 0 16px 40px rgba(108, 99, 255, 0.05);
+}
+
+.card-icon {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+/* Setup Flow */
+.setup-section {
+    padding: 100px 0;
+    border-top: 1px solid var(--border);
+}
+
+.setup-flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.setup-step {
+    text-align: center;
+    padding: 24px;
+}
+
+.step-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: rgba(108, 99, 255, 0.12);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+    color: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    margin: 0 auto 20px;
+}
+
+.setup-step h4 {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.setup-step p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* Download Section */
+.download-section {
+    padding: 120px 0;
+    border-top: 1px solid var(--border);
+    background: radial-gradient(circle at bottom, rgba(255, 107, 107, 0.04) 0%, rgba(10, 10, 26, 0) 60%);
+    text-align: center;
+}
+
+.download-container h2 {
+    font-family: var(--font-heading);
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.download-container p {
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.download-box {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-large {
+    padding: 18px 36px;
+    font-size: 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--accent), #E84118);
+    color: #FFFFFF;
+    text-decoration: none;
+    font-weight: 700;
+    box-shadow: 0 10px 25px rgba(255, 107, 107, 0.25);
+    transition: all 0.3s ease;
+}
+
+.btn-large:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.35);
+}
+
+.download-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Footer */
+footer {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+    background-color: #05050F;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 24px;
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+.footer-links a:hover {
+    color: var(--text-secondary);
+}
+
+/* Responsive / Mobile Adjustments */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Hide standard nav links on mobile to keep layout simple */
+    }
+    
+    .hero-title {
+        font-size: 40px;
+    }
+    
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+}

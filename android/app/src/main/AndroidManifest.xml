@@ -1,0 +1,153 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- ============================================================
+         PERMISSIONS — Shuni Call Recording App
+         Each permission is explained with WHY we need it.
+         ============================================================ -->
+
+    <!-- CORE: Record audio from microphone and call stream -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- CORE: Detect incoming/outgoing calls and phone state changes -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- CORE: Access call log for phone numbers and call direction -->
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+
+    <!-- CONTACTS: Resolve phone numbers to contact display names -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <!-- LOCATION: Track GPS position during calls for map feature -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+    <!-- FOREGROUND SERVICE: Keep recording alive when app is in background -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+
+    <!-- OVERLAY: Show recording indicator on top of other apps -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- STORAGE: Save recordings to /Shuni/ folder (visible in file manager) -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <!-- BOOT: Auto-start call listener after device reboot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- BIOMETRIC: Fingerprint/face unlock for app lock feature -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- NOTIFICATIONS: Show recording status and controls -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- VIBRATE: Haptic feedback for PIN input -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- INTERNET: Google Drive backup + map tiles -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:label="Shuni"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
+
+        <!-- ====== MAIN ACTIVITY ====== -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- ====== CALL RECORDING FOREGROUND SERVICE ====== -->
+        <!-- This service runs in the foreground during active calls to:
+             1. Record audio via Shizuku-granted VOICE_CALL source
+             2. Show a persistent notification with recording status
+             3. Survive app backgrounding during calls -->
+        <service
+            android:name=".recording.CallRecordingService"
+            android:exported="false"
+            android:foregroundServiceType="phoneCall|microphone" />
+
+        <!-- ====== CALL DETECTOR (InCallService) ====== -->
+        <!-- Listens for call state changes (ringing, answered, ended).
+             This is the modern API for detecting calls on Android 12+. -->
+        <service
+            android:name=".detection.CallDetectorService"
+            android:exported="true"
+            android:permission="android.permission.BIND_INCALL_SERVICE">
+            <meta-data
+                android:name="android.telecom.IN_CALL_SERVICE_UI"
+                android:value="false" />
+            <intent-filter>
+                <action android:name="android.telecom.InCallService" />
+            </intent-filter>
+        </service>
+
+        <!-- ====== PHONE STATE RECEIVER (Fallback) ====== -->
+        <!-- BroadcastReceiver that detects call state changes.
+             Fallback for devices where InCallService doesn't work. -->
+        <receiver
+            android:name=".detection.PhoneStateReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- ====== BOOT RECEIVER ====== -->
+        <!-- Restarts the call listener after device reboot so
+             recording works automatically without opening the app. -->
+        <receiver
+            android:name=".detection.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- ====== SHIZUKU PROVIDER ====== -->
+        <!-- Required by Shizuku API for inter-process communication.
+             The authority must match: ${applicationId}.shizuku -->
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:multiprocess="false"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+
+        <!-- Flutter embedding metadata -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- Query Shizuku app -->
+        <package android:name="moe.shizuku.privileged.api" />
+    </queries>
+</manifest>

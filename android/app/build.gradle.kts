@@ -45,9 +45,9 @@ android {
             // See INSTALLATION.md for signing instructions.
             signingConfig = signingConfigs.getByName("debug")
 
-            // Enable code shrinking and resource shrinking for smaller APK
-            isMinifyEnabled = true
-            isShrinkResources = true
+            // Disable code shrinking to prevent R8 from stripping Shizuku/Coroutine classes causing startup crashes
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

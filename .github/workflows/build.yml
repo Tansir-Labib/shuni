@@ -49,19 +49,22 @@ jobs:
         run: flutter pub get
 
       # 5. Build optimized split APKs
-      # This outputs:
-      # - build/app/outputs/flutter-apk/app-arm64-v8a-release.apk (22.4MB)
-      # - build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk (20.1MB)
-      # - build/app/outputs/flutter-apk/app-x86_64-release.apk (23.8MB)
       - name: Compile Split APKs
         run: flutter build apk --release --split-per-abi
+
+      # 5b. Rename APKs to nice names
+      - name: Rename APKs
+        run: |
+          mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk Shuni-${{ github.ref_name }}-arm64-v8a.apk
+          mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk Shuni-${{ github.ref_name }}-armeabi-v7a.apk
+          mv build/app/outputs/flutter-apk/app-x86_64-release.apk Shuni-${{ github.ref_name }}-x86_64.apk
 
       # 6. Upload arm64-v8a target APK as action run artifact
       - name: Upload Target arm64 APK
         uses: actions/upload-artifact@v4
         with:
           name: shuni-arm64-v8a-apk
-          path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+          path: Shuni-${{ github.ref_name }}-arm64-v8a.apk
 
       # 7. Create GitHub Release & Attach all split APKs (Runs on version tags only)
       - name: Create GitHub Release
@@ -69,9 +72,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
-            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-            build/app/outputs/flutter-apk/app-x86_64-release.apk
+            Shuni-${{ github.ref_name }}-arm64-v8a.apk
+            Shuni-${{ github.ref_name }}-armeabi-v7a.apk
+            Shuni-${{ github.ref_name }}-x86_64.apk
           name: Shuni Release ${{ github.ref_name }}
           draft: false
           prerelease: false

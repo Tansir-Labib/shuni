@@ -38,23 +38,24 @@ class AudioRecorder {
         val file = File(destDir, filename)
         currentFile = file
 
-        try {
-            // Attempt to start using primary configuration (VOICE_CALL via Shizuku)
-            _initAndStartRecorder(config.audioSource, config, file)
-        } catch (e: Exception) {
-            // Fallback: If VOICE_CALL fails, retry using the Microphone
-            if (config.audioSource == MediaRecorder.AudioSource.VOICE_CALL) {
-                try {
-                    _initAndStartRecorder(MediaRecorder.AudioSource.MIC, config, file)
-                } catch (fallbackEx: Exception) {
-                    throw fallbackEx
-                }
-            } else {
-                throw e
+        val sourcesToTry = listOf(
+            MediaRecorder.AudioSource.VOICE_CALL,
+            MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+            MediaRecorder.AudioSource.VOICE_RECOGNITION,
+            MediaRecorder.AudioSource.MIC
+        )
+
+        var lastException: Exception? = null
+        for (source in sourcesToTry) {
+            try {
+                _initAndStartRecorder(source, config, file)
+                return file.absolutePath
+            } catch (e: Exception) {
+                lastException = e
             }
         }
 
-        return file.absolutePath
+        throw lastException ?: Exception("All audio sources failed to start recording.")
     }
 
     private fun _initAndStartRecorder(source: Int, config: RecordingConfig, file: File) {

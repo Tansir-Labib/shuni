@@ -24,6 +24,8 @@ import android.location.Location
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
+import android.database.sqlite.SQLiteDatabase
+import java.io.File
 
 /**
  * # CallRecordingService
@@ -198,6 +200,10 @@ class CallRecordingService : Service() {
     }
 
     private fun _broadcastEndedEvent(result: RecordingResult, lat: Double?, lng: Double?) {
+        // 1. Save metadata directly to SQLite from Kotlin to avoid losing logs if the Flutter app is dead
+        _saveRecordToSQLite(result, lat, lng)
+
+        // 2. Broadcast to Flutter for active UI refresh
         CallEventStream.broadcastEvent(
             mapOf(
                 "event" to "recording_stopped",
@@ -211,6 +217,55 @@ class CallRecordingService : Service() {
                 "longitude" to lng
             )
         )
+    }
+
+    private fun _saveRecordToSQLite(result: RecordingResult, lat: Double?, lng: Double?) {
+        try {
+            val dbFile = File("/storage/emulated/0/Shuni/.shuni_db/shuni.db")
+            if (!dbFile.parentFile.exists()) {
+                dbFile.parentFile.mkdirs()
+            }
+            val db = SQLiteDatabase.openOrCreateDatabase(dbFile, null)
+            
+            // Ensure table exists
+            db.execSQL("""
+                CREATE TABLE IF NOT EXISTS call_records(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    phone_number TEXT NOT NULL,
+                    contact_name TEXT NOT NULL,
+                    date_time_ms INTEGER NOT NULL,
+                    duration_seconds INTEGER NOT NULL,
+                    direction TEXT NOT NULL,
+                    audio_file_path TEXT NOT NULL,
+                    file_size_bytes INTEGER NOT NULL,
+                    latitude REAL,
+                    longitude REAL,
+                    address TEXT,
+                    is_bookmarked INTEGER DEFAULT 0,
+                    notes TEXT,
+                    is_voip INTEGER DEFAULT 0
+                )
+            """)
+
+            val values = android.content.ContentValues().apply {
+                put("phone_number", number)
+                put("contact_name", name)
+                put("date_time_ms", System.currentTimeMillis() - (result.durationSeconds * 1000))
+                put("duration_seconds", result.durationSeconds)
+                put("direction", direction)
+                put("audio_file_path", result.filePath)
+                put("file_size_bytes", result.fileSizeBytes)
+                if (lat != null) put("latitude", lat)
+                if (lng != null) put("longitude", lng)
+                put("is_bookmarked", 0)
+                put("is_voip", 0)
+            }
+
+            db.insert("call_records", null, values)
+            db.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onDestroy() {

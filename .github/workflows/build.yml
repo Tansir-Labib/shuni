@@ -93,6 +93,8 @@ jobs:
       # 2. Configure Pages environment settings
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       # 3. Zip and upload target directory to Pages
       - name: Upload Pages Artifact

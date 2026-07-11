@@ -2,7 +2,7 @@ package com.shuni.app
 
 import android.content.Intent
 import android.os.Bundle
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.EventChannel
@@ -22,7 +22,7 @@ import com.shuni.app.shizuku.ShizukuBridge
  * 3. Registers [EventChannel] streams via [CallEventStream] for asynchronous phone event feeds.
  * 4. Manages Shizuku lifecycle binding states.
  */
-class MainActivity : FlutterActivity() {
+class MainActivity : FlutterFragmentActivity() {
     private lateinit var shizukuBridge: ShizukuBridge
     private lateinit var platformBridge: PlatformBridge
 

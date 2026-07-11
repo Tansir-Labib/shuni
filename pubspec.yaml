@@ -1,7 +1,7 @@
 name: shuni
 description: "Shuni (শুনি) — Personal call recording app. Listen, Remember."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.11.0
@@ -62,10 +62,17 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   riverpod_generator: ^2.6.3       # Riverpod code generation
   build_runner: ^2.4.14            # Dart code generation runner
+  flutter_launcher_icons: ^0.14.2  # Generates AAPT-compliant native icons
+
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/logo/shuni_logo.png"
+  min_sdk_android: 30
 
 flutter:
   uses-material-design: true
 
-  # assets:
-  #   - assets/logo/
+  assets:
+    - assets/logo/
   #   - assets/animations/

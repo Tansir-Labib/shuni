@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">Shuni uses this service to detect phone calls in the background and automatically start recording. This service runs silently and does not interact with your screen content.</string>
+</resources>

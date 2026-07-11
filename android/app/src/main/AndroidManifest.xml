@@ -125,6 +125,25 @@
             </intent-filter>
         </receiver>
 
+        <!-- ====== CALL ACCESSIBILITY SERVICE ====== -->
+        <!-- The most reliable call detection mechanism for Android 14+.
+             Unlike InCallService (requires default phone handler) or
+             BroadcastReceiver (killed by the OS), AccessibilityService
+             is kept alive permanently by the system.
+             User must enable it in: Settings > Accessibility > Shuni Call Monitor -->
+        <service
+            android:name=".detection.CallAccessibilityService"
+            android:exported="false"
+            android:label="Shuni Call Monitor"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
         <!-- ====== SHIZUKU PROVIDER ====== -->
         <!-- Required by Shizuku API for inter-process communication.
              The authority must match: ${applicationId}.shizuku -->

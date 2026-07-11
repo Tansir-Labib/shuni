@@ -89,10 +89,20 @@ class CallDetectorService : InCallService() {
             putExtra("direction", direction)
         }
         
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            } else {
+                startService(intent)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // Fallback: try starting a normal service if startForegroundService is blocked
+            try {
+                startService(intent)
+            } catch (fallbackEx: Exception) {
+                fallbackEx.printStackTrace()
+            }
         }
     }
 

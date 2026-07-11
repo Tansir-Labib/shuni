@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../providers/settings_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/app_settings.dart';
@@ -7,7 +8,6 @@ import '../../services/backup_service.dart';
 import '../../services/update_service.dart';
 import '../../theme/colors.dart';
 import '../../theme/typography.dart';
-import '../../widgets/glass_card.dart';
 import '../../widgets/update_dialog.dart';
 import '../../core/constants.dart';
 
@@ -26,11 +26,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final TextEditingController _pinController = TextEditingController();
   bool _isGoogleSignedIn = false;
   bool _isBackingUp = false;
+  String _appVersion = '...';
 
   @override
   void initState() {
     super.initState();
     _checkGoogleSignIn();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (mounted) {
+        setState(() {
+          _appVersion = 'v${info.version} (build ${info.buildNumber})';
+        });
+      }
+    } catch (_) {
+      // PackageInfo may fail in tests
+    }
   }
 
   Future<void> _checkGoogleSignIn() async {
@@ -134,6 +149,46 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  /// Check for updates. If [forceShowChangelog] is true, show the latest
+  /// release notes even when the user is already on the latest version.
+  Future<void> _checkForUpdates({bool forceShowChangelog = false}) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Checking for updates...')),
+    );
+
+    final updateService = UpdateService();
+    final release = await updateService.checkForUpdate();
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    if (release != null) {
+      // There IS a newer version — show the update dialog
+      showDialog(
+        context: context,
+        builder: (ctx) => UpdateDialog(release: release),
+      );
+    } else if (forceShowChangelog) {
+      // Already on latest — but user explicitly asked, so show the latest changelog
+      final latestRelease = await updateService.getLatestRelease();
+      if (!mounted) return;
+      if (latestRelease != null) {
+        showDialog(
+          context: context,
+          builder: (ctx) => UpdateDialog(release: latestRelease, isLatest: true),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not fetch release info.')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You are on the latest version!')),
+      );
+    }
+  }
+
   @override
   void dispose() {
     _pinController.dispose();
@@ -155,7 +210,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
           // 1. Recording settings
           _buildSectionHeader('Recording Config'),
-          GlassCard(
+          _buildCard(
             child: Column(
               children: [
                 SwitchListTile(
@@ -173,7 +228,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   contentPadding: EdgeInsets.zero,
                   trailing: const Icon(Icons.arrow_drop_down),
                   onTap: () {
-                    // Quick dialog select
                     showDialog(
                       context: context,
                       builder: (context) => SimpleDialog(
@@ -198,7 +252,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           // 2. Security settings
           _buildSectionHeader('Security & Lock'),
-          GlassCard(
+          _buildCard(
             child: Column(
               children: [
                 SwitchListTile(
@@ -237,7 +291,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           // 3. Backup Settings
           _buildSectionHeader('Google Drive Backup'),
-          GlassCard(
+          _buildCard(
             child: Column(
               children: [
                 ListTile(
@@ -294,13 +348,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           // 4. About settings
           _buildSectionHeader('About App'),
-          GlassCard(
+          _buildCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ListTile(
-                  title: Text('Shuni App Version'),
-                  subtitle: Text('v1.0.0 (API 30+)'),
+                ListTile(
+                  title: const Text('Shuni App Version'),
+                  subtitle: Text(_appVersion),
                   contentPadding: EdgeInsets.zero,
                 ),
                 Divider(color: AppColors.divider),
@@ -311,31 +365,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 Divider(color: AppColors.divider),
                 ListTile(
-                  title: const Text('Check for Updates'),
-                  subtitle: const Text('Manually check GitHub for new versions'),
+                  title: const Text('Check for Updates & Changelog'),
+                  subtitle: const Text('View release notes or download new versions'),
                   trailing: const Icon(Icons.system_update, color: AppColors.accent, size: 20),
                   contentPadding: EdgeInsets.zero,
-                  onTap: () async {
-                    // Show a loading snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Checking for updates...')),
-                    );
-                    
-                    final release = await UpdateService().checkForUpdate();
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      if (release != null) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => UpdateDialog(release: release),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('You are on the latest version!')),
-                        );
-                      }
-                    }
-                  },
+                  onTap: () => _checkForUpdates(forceShowChangelog: true),
                 ),
                 Divider(color: AppColors.divider),
                 const ListTile(
@@ -362,6 +396,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           letterSpacing: 1.2,
         ),
       ),
+    );
+  }
+
+  /// Lightweight card replacement for GlassCard.
+  /// GlassCard uses BackdropFilter which is extremely expensive during scrolling,
+  /// causing visible jank. This simple container gives the same visual appearance
+  /// without the performance penalty.
+  Widget _buildCard({required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.cardBorder, width: 1),
+      ),
+      child: child,
     );
   }
 }

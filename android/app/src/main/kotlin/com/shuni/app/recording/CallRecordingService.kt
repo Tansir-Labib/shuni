@@ -62,12 +62,17 @@ class CallRecordingService : Service() {
         number = intent.getStringExtra("phone_number") ?: "Unknown"
         direction = intent.getStringExtra("direction") ?: "incoming"
 
+        // IMMEDIATE FOREGROUND PROMOTION
+        // Must call this within 5 seconds of startForegroundService or Android will crash the app!
+        val initialNotification = _buildRecordingNotification("0s", true)
+        startForeground(NOTIFICATION_ID, initialNotification)
+
         // Resolve contact name on a background thread
         serviceScope.launch {
             name = ContactResolver.resolve(applicationContext, number)
             
             if (action == "START_RECORDING" && !isRecordingStarted) {
-                _startRecordingAndForeground()
+                _startRecording()
             } else if (action == "STOP_RECORDING") {
                 _stopRecordingAndService()
             }
@@ -76,12 +81,13 @@ class CallRecordingService : Service() {
         return START_STICKY
     }
 
-    private fun _startRecordingAndForeground() {
+    private fun _startRecording() {
         isRecordingStarted = true
 
-        // 1. Build and show the active recording notification
-        val notification = _buildRecordingNotification("0s")
-        startForeground(NOTIFICATION_ID, notification)
+        // Update the notification with the resolved name
+        val notification = _buildRecordingNotification("0s", false)
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(NOTIFICATION_ID, notification)
 
         // 2. Start audio recording
         val config = RecordingConfig()
@@ -117,20 +123,22 @@ class CallRecordingService : Service() {
                     val durationStr = "%dm %ds".format(seconds / 60, seconds % 60)
                     
                     val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    manager.notify(NOTIFICATION_ID, _buildRecordingNotification(durationStr))
+                    manager.notify(NOTIFICATION_ID, _buildRecordingNotification(durationStr, false))
                 }
             }
         }, 1000, 1000)
     }
 
-    private fun _buildRecordingNotification(duration: String): Notification {
+    private fun _buildRecordingNotification(duration: String, isInitializing: Boolean): Notification {
+        val title = if (isInitializing) "Connecting to call..." else "Recording call: $name"
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Recording call with $name")
+            .setContentTitle(title)
             .setContentText("Duration: $duration ($direction)")
             .setSmallIcon(android.R.drawable.presence_video_busy) // Red icon
             .setOngoing(true)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setCategory(NotificationCompat.CATEGORY_CALL)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setFullScreenIntent(null, true) // Force Heads-Up display
             .build()
     }
 
@@ -139,7 +147,7 @@ class CallRecordingService : Service() {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 "Shuni Call Recorder Service",
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_HIGH // Changed to HIGH for Heads-up Push Notification
             )
             channel.description = "Displays ongoing call recording alerts"
             val manager = getSystemService(NotificationManager::class.java)

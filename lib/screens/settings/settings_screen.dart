@@ -4,9 +4,11 @@ import '../../providers/settings_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/app_settings.dart';
 import '../../services/backup_service.dart';
+import '../../services/update_service.dart';
 import '../../theme/colors.dart';
 import '../../theme/typography.dart';
 import '../../widgets/glass_card.dart';
+import '../../widgets/update_dialog.dart';
 import '../../core/constants.dart';
 
 /// # SettingsScreen
@@ -307,10 +309,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   subtitle: Text('"${AppConstants.slogan}"\n${AppConstants.sloganEnglish}'),
                   contentPadding: EdgeInsets.zero,
                 ),
-                Divider(color: AppColors.divider),
+                const Divider(color: AppColors.divider),
+                ListTile(
+                  title: const Text('Check for Updates'),
+                  subtitle: const Text('Manually check GitHub for new versions'),
+                  trailing: const Icon(Icons.system_update, color: AppColors.accent, size: 20),
+                  contentPadding: EdgeInsets.zero,
+                  onTap: () async {
+                    // Show a loading snackbar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Checking for updates...')),
+                    );
+                    
+                    final release = await UpdateService().checkForUpdate();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      if (release != null) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => UpdateDialog(release: release),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('You are on the latest version!')),
+                        );
+                      }
+                    }
+                  },
+                ),
+                const Divider(color: AppColors.divider),
                 const ListTile(
                   title: Text('Developer'),
-                  subtitle: Text('[Your Name]'),
+                  subtitle: Text('Tansir Labib'),
                   contentPadding: EdgeInsets.zero,
                 ),
               ],

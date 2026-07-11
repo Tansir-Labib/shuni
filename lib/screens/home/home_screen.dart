@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../services/update_service.dart';
+import '../../widgets/update_dialog.dart';
 import '../../providers/call_records_provider.dart';
 import '../../providers/recording_provider.dart';
 import '../../providers/player_provider.dart';
@@ -34,6 +36,25 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkForUpdates();
+    });
+  }
+
+  Future<void> _checkForUpdates() async {
+    final updateService = UpdateService();
+    final release = await updateService.checkForUpdate();
+    if (release != null && mounted) {
+      showDialog(
+        context: context,
+        builder: (context) => UpdateDialog(release: release),
+      );
+    }
+  }
 
   @override
   void dispose() {

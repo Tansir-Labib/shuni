@@ -50,10 +50,17 @@ class PhoneStateReceiver : BroadcastReceiver() {
             putExtra("direction", direction)
         }
         
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            context.startForegroundService(serviceIntent)
-        } else {
-            context.startService(serviceIntent)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                context.startForegroundService(serviceIntent)
+            } else {
+                context.startService(serviceIntent)
+            }
+        } catch (e: Exception) {
+            // In Android 14+, starting a ForegroundService from the background throws an exception
+            // unless the app is exempt (e.g., has SYSTEM_ALERT_WINDOW permission).
+            // We catch it to prevent crashing if the user hasn't granted the permission.
+            e.printStackTrace()
         }
     }
 

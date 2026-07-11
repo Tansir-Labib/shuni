@@ -35,13 +35,21 @@ class _ShuniAppState extends ConsumerState<ShuniApp> with WidgetsBindingObserver
     super.dispose();
   }
 
+  DateTime? _pausedTime;
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
-      // App backgrounded, trigger lock
-      final settings = ref.read(settingsProvider);
-      if (settings.pinLockEnabled) {
-        ref.read(authProvider.notifier).lock();
+    if (state == AppLifecycleState.paused) {
+      _pausedTime = DateTime.now();
+    } else if (state == AppLifecycleState.resumed) {
+      if (_pausedTime != null) {
+        final diff = DateTime.now().difference(_pausedTime!);
+        if (diff.inMinutes >= 5) {
+          final settings = ref.read(settingsProvider);
+          if (settings.pinLockEnabled) {
+            ref.read(authProvider.notifier).lock();
+          }
+        }
       }
     }
   }

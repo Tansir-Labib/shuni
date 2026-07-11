@@ -71,10 +71,10 @@ class _PinInputFieldState extends State<PinInputField> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
-        if (!widget.focusNode.hasFocus) {
-          FocusScope.of(context).requestFocus(widget.focusNode);
-        }
+        FocusScope.of(context).requestFocus(widget.focusNode);
+        SystemChannels.textInput.invokeMethod('TextInput.show');
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,

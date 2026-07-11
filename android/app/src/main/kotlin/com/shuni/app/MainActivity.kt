@@ -2,6 +2,7 @@ package com.shuni.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -28,6 +29,10 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Hide app contents from recent apps screen
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        
         shizukuBridge = ShizukuBridge(applicationContext)
         shizukuBridge.bindService() // Connect to Shizuku background binders
     }

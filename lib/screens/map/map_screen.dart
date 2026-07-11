@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../core/extensions.dart';
 import '../../models/call_record.dart';
 import '../../providers/call_records_provider.dart';
@@ -18,12 +20,48 @@ import '../../widgets/glass_card.dart';
 /// ## Features
 /// - Pinpoints call origins using database coordinates.
 /// - Tapping a marker displays a summary bottom sheet.
-/// - Navigate directly to player view from markers.
-class MapScreen extends ConsumerWidget {
+/// - Live blue dot mapping using [flutter_map_location_marker].
+/// - FAB to quickly center the camera on the user's real-time physical location.
+class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends ConsumerState<MapScreen> {
+  late final MapController _mapController;
+
+  @override
+  void initState() {
+    super.initState();
+    _mapController = MapController();
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _centerOnCurrentLocation() async {
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      _mapController.move(LatLng(position.latitude, position.longitude), 15.0);
+    } catch (e) {
+      // Permission denied or location disabled
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Cannot access location. Please check permissions.')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final recordsState = ref.watch(callRecordsProvider);
 
     // Filter out records that do not contain coordinates
@@ -60,6 +98,7 @@ class MapScreen extends ConsumerWidget {
         children: [
           // Full Screen Map Layer
           FlutterMap(
+            mapController: _mapController,
             options: MapOptions(
               initialCenter: initialCenter,
               initialZoom: 12.0,
@@ -71,6 +110,18 @@ class MapScreen extends ConsumerWidget {
               ),
               MarkerLayer(
                 markers: markers,
+              ),
+              // Live Location Blue Dot Layer
+              CurrentLocationLayer(
+                alignPositionOnUpdate: AlignOnUpdate.never,
+                alignDirectionOnUpdate: AlignOnUpdate.never,
+                style: const LocationMarkerStyle(
+                  marker: DefaultLocationMarker(
+                    color: Colors.blue,
+                  ),
+                  markerSize: Size(20, 20),
+                  markerDirection: MarkerDirection.heading,
+                ),
               ),
             ],
           ),
@@ -91,6 +142,11 @@ class MapScreen extends ConsumerWidget {
               ),
             ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _centerOnCurrentLocation,
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.my_location, color: Colors.white),
       ),
     );
   }

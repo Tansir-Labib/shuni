@@ -1,7 +1,7 @@
 name: shuni
 description: "Shuni (শুনি) — Personal call recording app. Listen, Remember."
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.1.0+3
 
 environment:
   sdk: ^3.11.0
@@ -33,6 +33,7 @@ dependencies:
 
   # --- Maps & Location ---
   flutter_map: ^7.0.2              # OpenStreetMap map widget (free, no API key)
+  flutter_map_location_marker: ^9.0.1 # Live location blue dot
   latlong2: ^0.9.1                 # Lat/lng coordinate types
   geolocator: ^13.0.2              # GPS location provider
 
@@ -55,6 +56,12 @@ dependencies:
   google_sign_in: ^6.2.2           # Google account authentication
   googleapis: ^14.0.0              # Google Drive API client
   http: ^1.3.0                     # HTTP client for API calls
+  
+  # --- OTA Updater ---
+  dio: ^5.4.3                      # File downloading
+  open_filex: ^4.5.0               # Open APK installer
+  package_info_plus: ^8.0.0        # App version info
+  flutter_markdown: ^0.7.2         # Render GitHub changelogs
 
 dev_dependencies:
   flutter_test:

@@ -81,6 +81,7 @@ jobs:
   deploy-website:
     name: Deploy Website to Pages
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     # Grant Pages permissions
     environment:
       name: github-pages

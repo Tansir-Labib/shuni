@@ -309,7 +309,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   subtitle: Text('"${AppConstants.slogan}"\n${AppConstants.sloganEnglish}'),
                   contentPadding: EdgeInsets.zero,
                 ),
-                const Divider(color: AppColors.divider),
+                Divider(color: AppColors.divider),
                 ListTile(
                   title: const Text('Check for Updates'),
                   subtitle: const Text('Manually check GitHub for new versions'),
@@ -337,7 +337,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     }
                   },
                 ),
-                const Divider(color: AppColors.divider),
+                Divider(color: AppColors.divider),
                 const ListTile(
                   title: Text('Developer'),
                   subtitle: Text('Tansir Labib'),

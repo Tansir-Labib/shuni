@@ -67,7 +67,11 @@ class CallRecordingService : Service() {
         // IMMEDIATE FOREGROUND PROMOTION
         // Must call this within 5 seconds of startForegroundService or Android will crash the app!
         val initialNotification = _buildRecordingNotification("0s", true)
-        startForeground(NOTIFICATION_ID, initialNotification)
+        try {
+            startForeground(NOTIFICATION_ID, initialNotification)
+        } catch (e: Exception) {
+            android.util.Log.e("CallRecordingService", "Failed to start foreground", e)
+        }
 
         // Resolve contact name on a background thread
         serviceScope.launch {
@@ -92,7 +96,8 @@ class CallRecordingService : Service() {
         manager.notify(NOTIFICATION_ID, notification)
 
         // 2. Start audio recording
-        val config = RecordingConfig()
+        val outputDirectory = getExternalFilesDir("recordings")?.absolutePath ?: "/storage/emulated/0/Android/data/com.shuni.app/files/recordings"
+        val config = RecordingConfig(outputDir = outputDirectory)
         val filename = config.generateFileName(name, direction)
         
         try {
@@ -221,7 +226,7 @@ class CallRecordingService : Service() {
 
     private fun _saveRecordToSQLite(result: RecordingResult, lat: Double?, lng: Double?) {
         try {
-            val dbFile = File("/storage/emulated/0/Shuni/.shuni_db/shuni.db")
+            val dbFile = getDatabasePath("shuni.db")
             if (!dbFile.parentFile.exists()) {
                 dbFile.parentFile.mkdirs()
             }

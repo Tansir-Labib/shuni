@@ -1,46 +1,38 @@
 import 'dart:io';
 import 'package:share_plus/share_plus.dart';
-import '../core/constants.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// # StorageService
 /// 
-/// Manages physical files on the device filesystem under the public `/Shuni/` directories.
+/// Manages physical files on the device filesystem under package-specific directories.
 /// 
 /// ## Folder Structure
-/// - `/storage/emulated/0/Shuni/recordings/` : Where Opus compressed `.ogg` recordings live.
-/// - `/storage/emulated/0/Shuni/.shuni_db/` : Where the SQLite database file lives.
+/// - `/storage/emulated/0/Android/data/com.shuni.app/files/recordings/` : Where Opus compressed `.ogg` recordings live.
 /// 
 /// ## Learning Note
-/// By writing files to `/storage/emulated/0/Shuni` instead of the standard app sandbox
-/// (`path_provider.getApplicationDocumentsDirectory`), files are preserved even if the app
-/// is uninstalled, and they are fully indexable and accessible by general Android file managers.
+/// By writing files to package-specific external storage (`getExternalStorageDirectory`),
+/// we do not require any runtime storage permissions on Android 11+ (API 30+), eliminating
+/// the need for MANAGE_EXTERNAL_STORAGE.
 class StorageService {
   StorageService._(); // Private constructor
 
-  static const String rootPath = '/storage/emulated/0';
-  static const String shuniDirPath = '$rootPath/${AppConstants.baseFolder}';
-  static const String recordingsDirPath = '$rootPath/${AppConstants.recordingsFolder}';
+  static String? _recordingsDirPath;
+
+  /// Returns the package-specific external directory path where recordings are stored.
+  /// Does not require runtime permissions on API 19+.
+  static Future<String> get recordingsDirPath async {
+    if (_recordingsDirPath != null) return _recordingsDirPath!;
+    final Directory? extDir = await getExternalStorageDirectory();
+    _recordingsDirPath = '${extDir!.path}/recordings';
+    return _recordingsDirPath!;
+  }
 
   /// Ensures that all required directories exist on the filesystem.
   static Future<void> initializeDirectories() async {
-    final Directory shuniDir = Directory(shuniDirPath);
-    final Directory recDir = Directory(recordingsDirPath);
-
-    if (!await shuniDir.exists()) {
-      await shuniDir.create(recursive: true);
-    }
+    final String path = await recordingsDirPath;
+    final Directory recDir = Directory(path);
     if (!await recDir.exists()) {
       await recDir.create(recursive: true);
-    }
-
-    // Create a .nomedia file in the db folder so the database folder is ignored by media scanners
-    final Directory dbDir = Directory('$rootPath/${AppConstants.databaseFolder}');
-    if (!await dbDir.exists()) {
-      await dbDir.create(recursive: true);
-    }
-    final File nomedia = File('${dbDir.path}/.nomedia');
-    if (!await nomedia.exists()) {
-      await nomedia.create();
     }
   }
 
@@ -62,7 +54,8 @@ class StorageService {
   /// Lists all recorded files in the recording directory.
   static Future<List<File>> listRecordings() async {
     await initializeDirectories();
-    final Directory recDir = Directory(recordingsDirPath);
+    final String path = await recordingsDirPath;
+    final Directory recDir = Directory(path);
     
     try {
       final List<FileSystemEntity> entities = await recDir.list(recursive: false).toList();
@@ -88,7 +81,8 @@ class StorageService {
 
   /// Gets the total size of all files in the recordings directory in bytes.
   static Future<int> getRecordingsDirectorySize() async {
-    final Directory recDir = Directory(recordingsDirPath);
+    final String path = await recordingsDirPath;
+    final Directory recDir = Directory(path);
     if (!await recDir.exists()) return 0;
 
     int totalSize = 0;

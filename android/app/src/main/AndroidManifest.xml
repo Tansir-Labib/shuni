@@ -89,7 +89,7 @@
         <service
             android:name=".recording.CallRecordingService"
             android:exported="false"
-            android:foregroundServiceType="phoneCall|microphone" />
+            android:foregroundServiceType="microphone" />
 
         <!-- ====== CALL DETECTOR (InCallService) ====== -->
         <!-- Listens for call state changes (ringing, answered, ended).

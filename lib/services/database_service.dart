@@ -34,16 +34,8 @@ class DatabaseService {
   /// We store the database file in `/storage/emulated/0/Shuni/.shuni_db/shuni.db`
   /// so it's fully accessible to the user but hidden from default file views.
   Future<Database> _initDatabase() async {
-    // Get the base directory path
-    final String baseDirPath = '/storage/emulated/0/${AppConstants.databaseFolder}';
-    final Directory dbDirectory = Directory(baseDirPath);
-    
-    // Ensure the folder exists
-    if (!await dbDirectory.exists()) {
-      await dbDirectory.create(recursive: true);
-    }
-
-    final String dbPath = join(baseDirPath, AppConstants.databaseName);
+    final String databasesPath = await getDatabasesPath();
+    final String dbPath = join(databasesPath, AppConstants.databaseName);
 
     return await openDatabase(
       dbPath,
